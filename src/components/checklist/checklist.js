@@ -20,12 +20,9 @@ class Checklist extends Component {
       this.state = localStorageState;
     } else {
       this.state = {
-        'checklistItems': {
-          'race conditions': false,
-          'test10': false,
-          'test2': false,
-          'test3': false
-        },
+        // Adding ordering
+        'checklistItems': ['race_conditions', 'test10', 'test2', 'test3'],
+        'checklistItemsToggled': {},
         'addingItem': false
       };
       window.localStorage.setItem(LOCAL_STORAGE_STATE, JSON.stringify(this.state));
@@ -48,24 +45,23 @@ class Checklist extends Component {
       return;
     }
     this.setState((prevState) => {
-      return update(prevState, {
-        'checklistItems': { [item]: { $set: false }}
-      });
+      return update(prevState, { 'checklistItems': { $push: [item] } });
     });
   }
 
   removeItem(item) {
     this.setState((prevState) => {
-      let newState = Object.assign({}, prevState);
-      delete newState['checklistItems'][item];
-      return newState;
+      return update(prevState, {
+        'checklistItems': { $splice: [[prevState.checklistItems.indexOf(item), 1]] },
+        'checklistItemsToggled': { $unset: [item] }
+      });
     });
   }
 
   toggleItem(item) {
     this.setState((prevState) => {
       return update(prevState, {
-        'checklistItems': { [item]: { $set: !prevState.checklistItems[item] }}
+        'checklistItemsToggled': { [item]: { $set: !prevState.checklistItemsToggled[item] }}
       });
     });
   }
@@ -79,8 +75,8 @@ class Checklist extends Component {
   }
 
   render() {
-    let checkListItems = Object.keys(this.state.checklistItems).map((item) =>
-      <ChecklistItem key={ item } name={ item } selected={ this.state.checklistItems[item] } toggleItem={ this.toggleItem } removeItem={ this.removeItem } />
+    let checkListItems = this.state.checklistItems.map((item) =>
+      <ChecklistItem key={ item } name={ item } selected={ Boolean(this.state.checklistItemsToggled[item]) } toggleItem={ this.toggleItem } removeItem={ this.removeItem } />
     );
     return (
       <div className='checklist'>
