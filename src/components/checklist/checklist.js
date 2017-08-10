@@ -6,6 +6,7 @@ import './checklist.css';
 import util from '../../utils/util';
 
 const LOCAL_STORAGE_STATE = 'prChecklistState';
+const DEFAULT_CHECKLIST_ITEMS = ['race_conditions', 'test10', 'test2', 'test3']
 
 // Think of doing a dict for each checklist item of url to selected value, remove entry when all are selected and approved.
 // Add ordering
@@ -21,7 +22,7 @@ class Checklist extends Component {
     } else {
       this.state = {
         // Adding ordering
-        'checklistItems': ['race_conditions', 'test10', 'test2', 'test3'],
+        'checklistItems': DEFAULT_CHECKLIST_ITEMS,
         'checklistItemsToggled': {},
         'addingItem': false
       };
@@ -75,13 +76,19 @@ class Checklist extends Component {
   }
 
   render() {
-    let checkListItems = this.state.checklistItems.map((item) =>
-      <ChecklistItem key={ item } name={ item } selected={ Boolean(this.state.checklistItemsToggled[item]) } toggleItem={ this.toggleItem } removeItem={ this.removeItem } />
+    let checkListItems = this.state.checklistItems.map((item, index) =>
+      <ChecklistItem 
+        key={ item }
+        name={ item }
+        index={ index }
+        selected={ Boolean(this.state.checklistItemsToggled[item]) }
+        toggleItem={ this.toggleItem }
+        removeItem={ this.removeItem } />
     );
     return (
       <div className='checklist'>
         <ul>{ checkListItems }</ul>
-        <div className='checklist__item' onClick={ this.toggleAddingItem }>+</div>
+        <div className='checklist__item' onClick={ this.toggleAddingItem }><i className="fa fa-plus pr-icon add-icon" /></div>
         {
           this.state.addingItem ? <ItemInput addingItem={ this.state.addingItem } toggleAddingItem={ this.toggleAddingItem } addItem={ this.addItem } /> : null
         }
@@ -107,11 +114,9 @@ class ChecklistItem extends Component {
 
   render() {
     return (
-      <li className='checklist__item'>
-        <ul>
-          <li className={ 'checklist__item__name' + (this.props.selected ? ' selected' : '') } onClick={ this._toggleItem }><p>{ this.props.name }</p></li>
-          <li className='remove-item' onClick={ this._removeItem } />
-        </ul>
+      <li className={ 'checklist__item' + (this.props.selected ? ' selected' : '') } onClick={ this._toggleItem }>
+        <i className='pr-icon remove-icon fa fa-times' onClick={ this._removeItem } />
+        <p>{ this.props.name }</p>
       </li>
     );
   }
@@ -121,7 +126,8 @@ ChecklistItem.propTypes = {
   'name': PropTypes.string.isRequired,
   'selected': PropTypes.bool.isRequired,
   'toggleItem': PropTypes.func.isRequired,
-  'removeItem': PropTypes.func.isRequired
+  'removeItem': PropTypes.func.isRequired,
+  'index': PropTypes.number.isRequired,
 };
 
 class ItemInput extends Component {
@@ -146,7 +152,7 @@ class ItemInput extends Component {
       <div className='add-item-input'>
         <input className='add-item-input__text-field' value={ this.state.input } type='text' onChange={ this.handleChange } />
         <input className='btn add-item-input__submit-button' type='button' value='Add Item' onClick={ this._addItem } />
-        <div className='close-icon' onClick={ this.props.toggleAddingItem } />
+        <i className='close-icon fa fa-times' onClick={ this.props.toggleAddingItem } />
       </div>
     );
   }
