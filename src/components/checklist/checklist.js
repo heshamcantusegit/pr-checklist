@@ -6,7 +6,7 @@ import './checklist.css';
 import util from '../../utils/util';
 
 const LOCAL_STORAGE_STATE = 'prChecklistState';
-const DEFAULT_CHECKLIST_ITEMS = ['race_conditions', 'test10', 'test2', 'test3']
+const DEFAULT_CHECKLIST_ITEMS = ['race_conditions', 'test10', 'test2', 'test3'];
 
 // Think of doing a dict for each checklist item of url to selected value, remove entry when all are selected and approved.
 // Add ordering

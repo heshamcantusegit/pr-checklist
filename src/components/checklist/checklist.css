@@ -124,11 +124,3 @@
   color:white;
   cursor: pointer;
 }
-
-.close-icon--remove-item {
-  position: relative;
-  top: 0px;
-  right: 0px;
-  left: 25%;
-  box-shadow: none;
-}
