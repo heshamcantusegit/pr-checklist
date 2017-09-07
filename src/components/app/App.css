@@ -30,3 +30,7 @@
 	-moz-transition: all 0.3s;
 	transition: all 0.3s;
 }
+
+.title--thin {
+	font-weight:300;
+}
